@@ -7,19 +7,19 @@ import { Menu, X } from 'lucide-react';
 import { waLink } from '@/lib/content';
 
 const LINKS = [
-  { href: '#productos', label: 'Productos' },
-  { href: '#nosotros', label: 'Nosotros' },
-  { href: '#opiniones', label: 'Opiniones' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '/#productos', label: 'Productos' },
+  { href: '/#nosotros', label: 'Nosotros' },
+  { href: '/#opiniones', label: 'Opiniones' },
+  { href: '/#contacto', label: 'Contacto' },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-tinta/85 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-9 z-40 border-b border-white/5 bg-tinta/85 backdrop-blur-md sm:top-10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
-        <a href="#inicio" className="flex items-center gap-3">
+        <a href="/#inicio" className="flex items-center gap-3">
           <Image
             src="/images/zeta-logo.jpg"
             alt="Zeta Mass Supplements"
