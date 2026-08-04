@@ -71,6 +71,21 @@
     opacity: 0.92;
     mix-blend-mode: multiply;
   }
+
+  /* Announcement bar: scrolls two copies of the message edge-to-edge so the
+     full "mayorista y minorista" line is always readable, not truncated. */
+  .marquee-track {
+    animation: marquee 16s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
