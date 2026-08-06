@@ -20,6 +20,8 @@
     "@prisma/client": "^7.9.1",
     "@vercel/blob": "^2.6.1",
     "bcryptjs": "^3.0.3",
+    "embla-carousel-react": "^8.6.0",
+    "embla-carousel-wheel-gestures": "^8.1.0",
     "framer-motion": "^12.43.0",
     "jose": "^6.2.8",
     "lucide-react": "^0.451.0",
