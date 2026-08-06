@@ -1,10 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CardPayment, initMercadoPago } from '@mercadopago/sdk-react';
 import { Loader2 } from 'lucide-react';
 
 let initialized = false;
+
+// Objeto estático — si se recrea en cada render (como un literal inline),
+// el Brick de Mercado Pago lo detecta como un cambio de configuración y
+// destruye/vuelve a montar su formulario interno. Con muchos renders
+// seguidos (el usuario escribiendo en cualquier campo del checkout) esas
+// destrucciones se pisan entre sí y el SDK termina lanzando errores del
+// tipo "insertBefore"/"removeChild" sobre nodos que ya no existen.
+const CUSTOMIZATION = { visual: { hidePaymentButton: false } };
 
 export type PaymentResult =
   | { status: 'approved'; id: string | number }
@@ -38,6 +46,18 @@ export function CardPaymentForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Los datos de entrega siguen cambiando mientras el cliente escribe (aun
+  // con el Brick ya montado). Los leemos desde un ref dentro de onSubmit
+  // para no tener que recrear ese callback — y de paso no darle al Brick
+  // ninguna excusa para reinicializarse — en cada tecla.
+  const latest = useRef({ description, externalReference, order, onResult });
+  latest.current = { description, externalReference, order, onResult };
+
+  const initialization = useMemo(
+    () => ({ amount, payer: { email, identification: { type: 'DNI', number: dni } } }),
+    [amount, email, dni],
+  );
+
   useEffect(() => {
     const publicKey = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY;
     if (publicKey && !initialized) {
@@ -58,17 +78,15 @@ export function CardPaymentForm({
       )}
       {!ready && <p className="mb-2 text-xs text-tinta/40">Cargando formulario seguro…</p>}
       <CardPayment
-        initialization={{
-          amount,
-          payer: { email, identification: { type: 'DNI', number: dni } },
-        }}
-        customization={{ visual: { hidePaymentButton: false } }}
+        initialization={initialization}
+        customization={CUSTOMIZATION}
         onReady={() => setReady(true)}
         onError={(err) => {
           console.error('CardPayment Brick error', err);
           setError('No se pudo cargar el formulario de pago. Recarga la página o usa Yape.');
         }}
         onSubmit={async (formData) => {
+          const { description, externalReference, order, onResult } = latest.current;
           setSubmitting(true);
           setError(null);
           try {
