@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Images, Package, ShoppingBag } from 'lucide-react';
 import { prisma } from '@/lib/db';
+import { MpStatusCheck } from '@/components/admin/MpStatusCheck';
 
 export default async function AdminHomePage() {
   const [productCount, orderCount, pendingCount] = await Promise.all([
@@ -33,6 +34,10 @@ export default async function AdminHomePage() {
             <p className="text-xs text-tinta/40">{card.hint}</p>
           </Link>
         ))}
+      </div>
+
+      <div className="mt-8">
+        <MpStatusCheck />
       </div>
     </div>
   );
