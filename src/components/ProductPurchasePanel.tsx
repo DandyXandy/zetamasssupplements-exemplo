@@ -8,6 +8,7 @@ import { Check, MessageCircle, Minus, Plus, ShoppingCart, Zap } from 'lucide-rea
 import { useCart } from '@/lib/cart-context';
 import { WHATSAPP_PRIMARY, waLink } from '@/lib/content';
 import type { FullProduct } from '@/lib/products-repo';
+import { TrustBadges } from './TrustBadges';
 
 function formatPEN(value: number | null) {
   return value === null ? 'Consultar precio' : `S/ ${value}`;
@@ -274,6 +275,10 @@ export function ProductPurchasePanel({ product }: { product: FullProduct }) {
               Precio a confirmar por WhatsApp según stock y presentación.
             </p>
           )}
+        </div>
+
+        <div className="mt-4">
+          <TrustBadges />
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { AnnouncementBar } from '@/components/AnnouncementBar';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CardPaymentForm, type PaymentResult } from '@/components/CardPaymentForm';
+import { TrustBadges } from '@/components/TrustBadges';
 import { useCart } from '@/lib/cart-context';
 import { WHATSAPP_PRIMARY, waLink } from '@/lib/content';
 
@@ -170,6 +171,8 @@ export default function CheckoutPage() {
                   <FileCheck2 className="h-5 w-5 shrink-0 text-oro" />
                   Emitimos boleta o factura por tu compra — solo pídelo al confirmar tu pedido.
                 </div>
+
+                <TrustBadges />
               </div>
 
               <div className="h-fit space-y-4 rounded-2xl border border-crema-line bg-white p-5">
