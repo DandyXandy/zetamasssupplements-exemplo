@@ -14,6 +14,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
     category: product.category,
     isCombo: product.isCombo,
     comboDescription: product.comboDescription ?? '',
+    badge: product.badge ?? '',
     shortDescription: product.shortDescription ?? '',
     description: product.description ?? '',
     style: product.style ?? '',

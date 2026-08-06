@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       category: data.category,
       isCombo: !!data.isCombo,
       comboDescription: data.comboDescription || null,
+      badge: data.badge || null,
       shortDescription: data.shortDescription || null,
       description: data.description || null,
       style: data.style || null,

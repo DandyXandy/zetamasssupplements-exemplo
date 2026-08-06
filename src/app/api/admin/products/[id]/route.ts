@@ -18,6 +18,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       category: data.category,
       isCombo: !!data.isCombo,
       comboDescription: data.comboDescription || null,
+      badge: data.badge || null,
       shortDescription: data.shortDescription || null,
       description: data.description || null,
       style: data.style || null,
@@ -29,6 +30,23 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     },
   });
 
+  return NextResponse.json({ ok: true });
+}
+
+// Actualización parcial — usada por el panel de Combos para cambiar solo
+// la foto principal o el sello de marketing sin tocar el resto del producto.
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: 'No autorizado.' }, { status: 401 });
+
+  const { id } = await params;
+  const data = await request.json();
+
+  const update: Record<string, unknown> = {};
+  if (data.images !== undefined) update.images = JSON.stringify(data.images);
+  if (data.badge !== undefined) update.badge = data.badge || null;
+
+  await prisma.product.update({ where: { id }, data: update });
   return NextResponse.json({ ok: true });
 }
 

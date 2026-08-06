@@ -11,12 +11,16 @@ import { SocialProof } from '@/components/SocialProof';
 import { FAQ } from '@/components/FAQ';
 import { Footer } from '@/components/Footer';
 import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
-import { getAllCatalogItems, getHeroSlides } from '@/lib/products-repo';
+import { getAllCatalogItems, getFeaturedCombos, getHeroSlides } from '@/lib/products-repo';
 
 export const revalidate = 0;
 
 export default async function Home() {
-  const [items, slides] = await Promise.all([getAllCatalogItems(), getHeroSlides()]);
+  const [items, slides, combos] = await Promise.all([
+    getAllCatalogItems(),
+    getHeroSlides(),
+    getFeaturedCombos(),
+  ]);
 
   return (
     <>
@@ -27,7 +31,7 @@ export default async function Home() {
         <KeywordMarquee />
         <GoalsStrip />
         <CategoryGrid items={items} />
-        <FeaturedProducts items={items} total={items.length} />
+        <FeaturedProducts combos={combos} total={items.length} />
         <About />
         <SocialProof />
         <WholesaleSplit />

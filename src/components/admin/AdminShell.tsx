@@ -3,12 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Images, LayoutGrid, LogOut, Package, ShoppingBag } from 'lucide-react';
+import { Gift, Images, LayoutGrid, LogOut, Package, ShoppingBag } from 'lucide-react';
 
 const NAV = [
   { href: '/admin', label: 'Resumen', icon: LayoutGrid, exact: true },
   { href: '/admin/pedidos', label: 'Pedidos', icon: ShoppingBag },
   { href: '/admin/productos', label: 'Productos', icon: Package },
+  { href: '/admin/combos', label: 'Combos', icon: Gift },
   { href: '/admin/banner', label: 'Banner', icon: Images },
 ];
 

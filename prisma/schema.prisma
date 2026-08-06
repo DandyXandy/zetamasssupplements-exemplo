@@ -18,6 +18,7 @@ model Product {
   category         String
   isCombo          Boolean  @default(false)
   comboDescription String?
+  badge            String? // sello de marketing (ej. "Más vendido", "Mejor opción")
   shortDescription String?
   description      String?
   style            String? // tono/estilo del producto (ej. "Energético", "Clásico")

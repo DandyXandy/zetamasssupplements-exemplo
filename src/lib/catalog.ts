@@ -14,6 +14,7 @@ export type CatalogItem = {
   image: string;
   isCombo?: boolean;
   comboDescription?: string;
+  badge?: string;
 };
 
 export type CatalogCategory = { slug: string; label: string; icon: string; blurb: string };

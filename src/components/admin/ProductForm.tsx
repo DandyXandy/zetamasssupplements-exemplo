@@ -16,6 +16,7 @@ export type ProductFormData = {
   category: string;
   isCombo: boolean;
   comboDescription: string;
+  badge: string;
   shortDescription: string;
   description: string;
   style: string;
@@ -33,6 +34,7 @@ const EMPTY: ProductFormData = {
   category: CATALOG_CATEGORIES[0].slug,
   isCombo: false,
   comboDescription: '',
+  badge: '',
   shortDescription: '',
   description: '',
   style: '',
@@ -216,6 +218,15 @@ export function ProductForm({
               placeholder="Ej: Energético, Clásico…"
               value={form.style}
               onChange={(e) => update('style', e.target.value)}
+              className="mt-1 w-full rounded-lg border border-crema-line px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="text-xs font-semibold text-tinta/50">
+            Sello de marketing (opcional)
+            <input
+              placeholder="Ej: Más vendido, Mejor opción…"
+              value={form.badge}
+              onChange={(e) => update('badge', e.target.value)}
               className="mt-1 w-full rounded-lg border border-crema-line px-3 py-2 text-sm"
             />
           </label>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Check, Eye, ShoppingCart } from 'lucide-react';
+import { Check, Eye, ShoppingCart, Sparkles } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import type { CatalogItem } from '@/lib/catalog';
 
@@ -57,6 +57,12 @@ export function CatalogCard({ item, index = 0 }: { item: CatalogItem; index?: nu
         {item.isCombo && (
           <span className="absolute left-3 top-3 rounded-full bg-oro px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
             Combo + regalos
+          </span>
+        )}
+        {item.badge && (
+          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-lima px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-tinta">
+            <Sparkles className="h-3 w-3" />
+            {item.badge}
           </span>
         )}
       </Link>
