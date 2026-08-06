@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 import type { CatalogItem } from '@/lib/catalog';
-import type { Product } from '@prisma/client';
+import type { Product } from '@/generated/prisma';
 
 // Puente entre la tabla Product (editable desde el panel admin) y el tipo
 // CatalogItem que ya usan los componentes públicos del sitio (CatalogCard,

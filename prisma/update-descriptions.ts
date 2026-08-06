@@ -3,7 +3,7 @@
 // de producto y la línea de la marca. Los 4 productos "flagship" (que ya
 // tienen ficha técnica completa en src/lib/products.ts) no se tocan.
 import { config } from 'dotenv';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../src/generated/prisma';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { CATALOG, type CatalogItem } from '../src/lib/catalog';
 import { PRODUCTS } from '../src/lib/products';
