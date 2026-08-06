@@ -1,0 +1,59 @@
+// Base de datos del panel admin. SQLite para desarrollo — al desplegar en un
+// host serverless (Vercel, etc.) hay que migrar DATABASE_URL a un Postgres
+// administrado (ej. Neon, Supabase): con Prisma el cambio es solo de
+// datasource + variable de entorno, el resto del código no cambia.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  brand            String
+  category         String
+  isCombo          Boolean  @default(false)
+  comboDescription String?
+  shortDescription String?
+  description      String?
+  style            String? // tono/estilo del producto (ej. "Energético", "Clásico")
+  benefits         String? // JSON string[]
+  usage            String?
+  images           String // JSON string[] — hasta 3 fotos generales del producto
+  sizes            String // JSON { label: string; price: number | null; image?: string }[]
+  flavors          String? // JSON { label: string; image?: string }[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Order {
+  id               String   @id @default(cuid())
+  externalReference String  @unique
+  customerName     String
+  customerDni      String
+  customerEmail    String?
+  customerPhone    String
+  customerAddress  String
+  customerDistrict String
+  items            String // JSON { name, sizeLabel, price, qty }[]
+  total            Float
+  paymentMethod    String // 'tarjeta' | 'yape'
+  status           String // 'pendiente' | 'aprobado' | 'rechazado' | 'en_revision'
+  mpPaymentId      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model BannerSlide {
+  id        String   @id @default(cuid())
+  type      String // 'video' | 'image'
+  url       String
+  posterUrl String? // solo para video
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+}

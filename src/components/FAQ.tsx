@@ -30,18 +30,18 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="relative bg-tinta px-5 py-20 sm:px-8 sm:py-28">
+    <section className="relative bg-crema px-5 py-20 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-3xl">
         <div className="text-center">
-          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima">
+          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima-dark">
             Preguntas frecuentes
           </span>
-          <h2 className="mt-3 font-display text-4xl leading-tight text-hueso sm:text-5xl">
+          <h2 className="mt-3 font-display text-4xl leading-tight text-tinta sm:text-5xl">
             Todo antes de escribirnos
           </h2>
         </div>
 
-        <div className="mt-10 divide-y divide-white/10 rounded-2xl border border-white/10">
+        <div className="mt-10 divide-y divide-crema-line rounded-2xl border border-crema-line bg-white shadow-sm">
           {FAQS.map((item, i) => {
             const isOpen = open === i;
             return (
@@ -52,15 +52,15 @@ export function FAQ() {
                   aria-expanded={isOpen}
                   className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
                 >
-                  <span className="font-display text-base tracking-wide text-hueso sm:text-lg">
+                  <span className="font-display text-base tracking-wide text-tinta sm:text-lg">
                     {item.q}
                   </span>
                   <ChevronDown
-                    className={`h-5 w-5 shrink-0 text-lima transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    className={`h-5 w-5 shrink-0 text-lima-dark transition-transform ${isOpen ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-hueso/70 sm:px-7">{item.a}</div>
+                  <div className="px-5 pb-5 text-sm text-tinta/70 sm:px-7">{item.a}</div>
                 )}
               </div>
             );

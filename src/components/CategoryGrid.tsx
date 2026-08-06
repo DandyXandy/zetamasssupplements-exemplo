@@ -1,49 +1,101 @@
 'use client';
 
+import { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Beef, Droplets, Flame, Pill, TrendingUp, Zap, type LucideIcon } from 'lucide-react';
-import { CATEGORIES } from '@/lib/products';
+import {
+  ArrowRight,
+  Beef,
+  Dna,
+  Droplets,
+  Flame,
+  Gift,
+  Pill,
+  Sparkles,
+  TrendingUp,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react';
+import { CATALOG_CATEGORIES, type CatalogItem } from '@/lib/catalog';
+import { CatalogCard } from './CatalogCard';
 
-const ICONS: Record<string, LucideIcon> = { Beef, Zap, Flame, TrendingUp, Pill, Droplets };
+const ICONS: Record<string, LucideIcon> = {
+  Gift,
+  TrendingUp,
+  Beef,
+  Sparkles,
+  Zap,
+  Flame,
+  Dna,
+  Pill,
+  Droplets,
+};
 
-export function CategoryGrid() {
+const PREVIEW_COUNT = 8;
+
+export function CategoryGrid({ items }: { items: CatalogItem[] }) {
+  const [activeCategory, setActiveCategory] = useState(CATALOG_CATEGORIES[1].slug);
+
+  const products = items.filter((p) => p.category === activeCategory).slice(0, PREVIEW_COUNT);
+  const total = items.filter((p) => p.category === activeCategory).length;
+
   return (
-    <section className="relative bg-tinta px-5 py-20 sm:px-8 sm:py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative bg-crema px-5 py-20 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-7xl">
         <div className="max-w-xl">
-          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima">
+          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima-dark">
             Categorías
           </span>
-          <h2 className="mt-3 font-display text-4xl leading-tight text-hueso sm:text-5xl">
-            Todo lo que tu entrenamiento necesita
+          <h2 className="mt-3 font-display text-4xl leading-tight text-tinta sm:text-5xl">
+            Busca por categoría
           </h2>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
-          {CATEGORIES.map((cat, i) => {
+        <div className="mt-8 flex gap-2 overflow-x-auto pb-2">
+          {CATALOG_CATEGORIES.map((cat) => {
             const Icon = ICONS[cat.icon];
+            const isActive = activeCategory === cat.slug;
             return (
-              <motion.a
+              <button
                 key={cat.slug}
-                href="#productos"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.4, delay: i * 0.06, ease: 'easeOut' }}
-                className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl border border-white/8 bg-carbon p-5 transition-colors hover:border-lima/40 sm:p-6"
+                type="button"
+                onClick={() => setActiveCategory(cat.slug)}
+                className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'border-lima bg-lima text-tinta'
+                    : 'border-crema-line bg-white text-tinta/60 hover:border-tinta/30'
+                }`}
               >
-                <span className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-lima/0 blur-2xl transition-colors duration-500 group-hover:bg-lima/20" />
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-lima/10 text-lima transition-transform duration-300 group-hover:-translate-y-1 group-hover:bg-lima group-hover:text-tinta">
-                  <Icon className="h-6 w-6" strokeWidth={1.75} />
-                </span>
-                <div>
-                  <h3 className="font-display text-lg tracking-wide text-hueso">{cat.label}</h3>
-                  <p className="mt-1 text-xs text-hueso/55">{cat.blurb}</p>
-                </div>
-              </motion.a>
+                <Icon className="h-4 w-4" />
+                {cat.label}
+              </button>
             );
           })}
         </div>
+
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"
+        >
+          {products.map((item, i) => (
+            <CatalogCard key={item.slug} item={item} index={i} />
+          ))}
+        </motion.div>
+
+        {total > PREVIEW_COUNT && (
+          <div className="mt-8 text-center">
+            <Link
+              href={`/tienda?categoria=${activeCategory}`}
+              className="inline-flex items-center gap-2 rounded-full border border-tinta/15 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-tinta transition-colors hover:border-tinta/40"
+            >
+              Ver los {total} productos
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

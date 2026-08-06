@@ -8,7 +8,7 @@
   }
 
   body {
-    background-color: #0a0b09;
+    background-color: #ffffff;
   }
 
   ::selection {
@@ -23,55 +23,6 @@
 }
 
 @layer components {
-  /* Signature element: the wholesale hang-tag.
-     Modeled on the real business-card / price-badge artifacts found on
-     the client's Instagram (yellow price circle, "ZETAMAS SUPLEMENTS"
-     card, hand-stamped "PRECIO MAYORISTA" reel overlays). */
-  .hangtag {
-    position: relative;
-    background: #f4efe4;
-    color: #16180f;
-    border: 1px dashed rgba(22, 24, 15, 0.35);
-    border-radius: 4px;
-  }
-
-  .hangtag::before {
-    content: '';
-    position: absolute;
-    top: -9px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    background: #0a0b09;
-    border: 3px solid #f4efe4;
-  }
-
-  .hangtag::after {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: #0a0b09;
-  }
-
-  .stamp {
-    font-family: var(--font-mono), monospace;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 2px solid currentColor;
-    border-radius: 3px;
-    transform: rotate(-6deg);
-    display: inline-block;
-    opacity: 0.92;
-    mix-blend-mode: multiply;
-  }
-
   /* Announcement bar: scrolls two copies of the message edge-to-edge so the
      full "mayorista y minorista" line is always readable, not truncated. */
   .marquee-track {

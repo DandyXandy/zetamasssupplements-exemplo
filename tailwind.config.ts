@@ -25,6 +25,11 @@ const config: Config = {
         },
         hueso: '#F4EFE4',
         mostaza: '#F5B914',
+        crema: {
+          DEFAULT: '#FFFFFF',
+          soft: '#F5F4F0',
+          line: '#E7E5DF',
+        },
       },
       fontFamily: {
         display: ['var(--font-anton)', 'sans-serif'],

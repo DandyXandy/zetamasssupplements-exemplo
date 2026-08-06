@@ -40,7 +40,7 @@ export const PRODUCTS: Product[] = [
     name: 'Gold Standard 100% Whey Protein',
     brand: 'Optimum Nutrition',
     category: 'Proteínas',
-    categorySlug: 'proteinas',
+    categorySlug: 'proteinas-whey',
     weight: '2.27 kg (5 lb)',
     servings: '71 porciones',
     flavors: ['Extreme Milk Chocolate', 'Vainilla', 'Cookies & Cream', 'Banana', 'Fresa'],

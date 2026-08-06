@@ -62,11 +62,11 @@ export function Footer() {
                 <Music2 className="h-5 w-5" />
               </a>
               <Image
-                src="/images/zeta-logo.jpg"
+                src="/branding/zeta-mascot.png"
                 alt="Zeta Mass Supplements"
                 width={44}
                 height={44}
-                className="h-11 w-11 rounded-full border-2 border-lima object-cover"
+                className="h-11 w-11 object-contain"
               />
             </div>
           </div>

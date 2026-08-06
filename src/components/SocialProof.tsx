@@ -28,16 +28,16 @@ const MESSAGES = [
 
 export function SocialProof() {
   return (
-    <section id="opiniones" className="relative bg-tinta px-5 py-20 sm:px-8 sm:py-28">
+    <section id="opiniones" className="relative bg-crema-soft px-5 py-20 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-xl">
-          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima">
+          <span className="text-xs font-semibold uppercase tracking-widest2 text-lima-dark">
             Opiniones
           </span>
-          <h2 className="mt-3 font-display text-4xl leading-tight text-hueso sm:text-5xl">
+          <h2 className="mt-3 font-display text-4xl leading-tight text-tinta sm:text-5xl">
             Así conversan nuestros clientes
           </h2>
-          <p className="mt-3 text-xs text-hueso/40">
+          <p className="mt-3 text-xs text-tinta/40">
             Ejemplo de formato — se reemplaza por capturas reales de WhatsApp/Instagram del
             cliente antes de publicar.
           </p>
@@ -51,15 +51,15 @@ export function SocialProof() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="rounded-2xl rounded-tl-sm bg-lima-dark/20 p-5"
+              className="rounded-2xl rounded-tl-sm bg-lima/15 p-5"
             >
-              <p className="text-sm leading-relaxed text-hueso/90">{msg.text}</p>
+              <p className="text-sm leading-relaxed text-tinta/90">{msg.text}</p>
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs font-semibold text-lima">{msg.name}</span>
-                <span className="flex items-center gap-1 text-[11px] text-hueso/40">
+                <span className="text-xs font-semibold text-lima-dark">{msg.name}</span>
+                <span className="flex items-center gap-1 text-[11px] text-tinta/40">
                   {msg.time}
-                  <Check className="h-3 w-3 text-lima" />
-                  <Check className="-ml-2 h-3 w-3 text-lima" />
+                  <Check className="h-3 w-3 text-lima-dark" />
+                  <Check className="-ml-2 h-3 w-3 text-lima-dark" />
                 </span>
               </div>
             </motion.div>
