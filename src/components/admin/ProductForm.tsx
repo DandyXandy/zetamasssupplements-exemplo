@@ -55,15 +55,20 @@ function ImageUploadSlot({
   label: string;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     setUploading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append('file', file);
       const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (res.ok) onChange(data.url);
+      else setError(data.error ?? 'No se pudo subir la foto.');
+    } catch {
+      setError('No se pudo conectar con el servidor.');
     } finally {
       setUploading(false);
     }
@@ -71,6 +76,11 @@ function ImageUploadSlot({
 
   return (
     <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-crema-line bg-crema-soft">
+      {error && (
+        <p className="absolute inset-x-0 bottom-0 z-10 bg-red-600/90 px-1 py-0.5 text-center text-[8px] leading-tight text-white">
+          {error}
+        </p>
+      )}
       {url ? (
         <Image src={url} alt={label} fill className="object-contain p-1" />
       ) : (

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Check, ShoppingCart } from 'lucide-react';
+import { Check, Eye, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import type { CatalogItem } from '@/lib/catalog';
 
@@ -109,6 +109,14 @@ export function CatalogCard({ item, index = 0 }: { item: CatalogItem; index?: nu
         {availableSizes.length === 0 && (
           <p className="mt-1 text-[10px] text-tinta/40">Precio a confirmar por WhatsApp</p>
         )}
+
+        <Link
+          href={`/productos/${item.slug}`}
+          className="glow-pulse mt-3 flex items-center justify-center gap-1.5 rounded-full bg-tinta px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-white transition-colors hover:bg-tinta/85"
+        >
+          <Eye className="h-3.5 w-3.5" />
+          Ver producto
+        </Link>
       </div>
     </motion.article>
   );

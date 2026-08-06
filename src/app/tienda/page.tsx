@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { TiendaClient } from './TiendaClient';
 import { getAllCatalogItems } from '@/lib/products-repo';
 
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   const items = await getAllCatalogItems();
   return {

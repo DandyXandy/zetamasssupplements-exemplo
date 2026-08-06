@@ -13,6 +13,8 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
 import { getAllCatalogItems, getHeroSlides } from '@/lib/products-repo';
 
+export const revalidate = 0;
+
 export default async function Home() {
   const [items, slides] = await Promise.all([getAllCatalogItems(), getHeroSlides()]);
 

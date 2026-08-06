@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, MessageCircle, Minus, Plus, ShoppingCart, Zap } from 'lucide-react';
+import { Check, Gift, MessageCircle, Minus, Plus, ShoppingCart, Zap } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { WHATSAPP_PRIMARY, waLink } from '@/lib/content';
 import type { FullProduct } from '@/lib/products-repo';
@@ -154,6 +154,11 @@ export function ProductPurchasePanel({ product }: { product: FullProduct }) {
         {product.comboDescription && (
           <p className="mt-4 text-tinta/70">{product.comboDescription}</p>
         )}
+
+        <div className="glow-pulse mt-4 inline-flex items-center gap-2 rounded-full bg-lima px-4 py-2 text-xs font-bold uppercase tracking-wide text-tinta">
+          <Gift className="h-4 w-4" />
+          En la compra de este producto, ¡te llevas un regalo!
+        </div>
 
         <div className="mt-6 rounded-2xl border border-crema-line bg-white p-6">
           <span className="font-display text-3xl text-tinta">{formatPEN(size?.price ?? null)}</span>

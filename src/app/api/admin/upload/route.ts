@@ -42,6 +42,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: blob.url });
   }
 
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        error:
+          'Falta conectar Vercel Blob. En el dashboard de Vercel ve a Storage → Create Database → Blob, conéctalo a este proyecto y vuelve a intentar.',
+      },
+      { status: 501 },
+    );
+  }
+
   const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
   await mkdir(uploadsDir, { recursive: true });
   await writeFile(path.join(uploadsDir, filename), output);
