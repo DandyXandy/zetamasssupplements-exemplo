@@ -65,7 +65,7 @@ export function Hero({ slides }: { slides?: HeroSlide[] }) {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-[100svh] items-end overflow-hidden pt-36 sm:pt-40"
+      className="relative flex h-[68svh] items-end overflow-hidden pt-28 sm:h-auto sm:min-h-[100svh] sm:pt-40"
     >
       {/* Las 4 capas del carrusel quedan montadas todo el tiempo y solo se
           cruzan por opacidad — evita parpadeos y condiciones de carrera con
@@ -120,51 +120,37 @@ export function Hero({ slides }: { slides?: HeroSlide[] }) {
       >
         <ChevronRight className="h-5 w-5" />
       </button>
-      <div className="absolute bottom-[13.5rem] left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-64">
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            aria-label={`Ir al slide ${i + 1}`}
-            onClick={() => goTo(i)}
-            className={`h-1.5 rounded-full transition-all ${
-              i === index ? 'w-6 bg-lima' : 'w-1.5 bg-hueso/40 hover:bg-hueso/70'
-            }`}
-          />
-        ))}
-      </div>
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 sm:px-8 sm:pb-24">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-5 sm:px-8 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="max-w-2xl"
         >
-          <h1 className="font-display text-[12vw] leading-[0.95] text-hueso sm:text-6xl lg:text-7xl">
+          <h1 className="font-display text-[10vw] leading-[0.95] text-hueso sm:text-6xl lg:text-7xl">
             SUPLEMENTOS <span className="text-lima">ORIGINALES</span>
           </h1>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-4 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:gap-3">
             <a
               href={waLink('Hola Zeta Mass! Quiero cotizar suplementos al precio mayorista 💪')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-hueso/25 px-7 py-4 text-sm font-bold uppercase tracking-wide text-hueso transition-colors hover:border-hueso/60"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-hueso/25 px-6 py-3 text-sm font-bold uppercase tracking-wide text-hueso transition-colors hover:border-hueso/60 sm:px-7 sm:py-4"
             >
               <MessageCircle className="h-4 w-4" />
               Contactar
             </a>
             <a
               href="/tienda"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-lima px-7 py-4 text-sm font-bold uppercase tracking-wide text-tinta transition-colors hover:bg-lima-light"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-lima px-6 py-3 text-sm font-bold uppercase tracking-wide text-tinta transition-colors hover:bg-lima-light sm:px-7 sm:py-4"
             >
               Ver Catálogo
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 sm:mt-6 sm:gap-y-2">
             {BADGES.map((badge) => (
               <span
                 key={badge.label}
@@ -176,6 +162,20 @@ export function Hero({ slides }: { slides?: HeroSlide[] }) {
             ))}
           </div>
         </motion.div>
+
+        <div className="mt-4 flex justify-center gap-2 sm:mt-8 sm:justify-start">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Ir al slide ${i + 1}`}
+              onClick={() => goTo(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? 'w-6 bg-lima' : 'w-1.5 bg-hueso/40 hover:bg-hueso/70'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
