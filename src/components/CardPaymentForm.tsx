@@ -66,10 +66,20 @@ export function CardPaymentForm({
   // key y falla con "fields_setup_failed_after_3_tries". Por eso montamos el
   // Brick solo después de que la inicialización terminó.
   useEffect(() => {
-    const publicKey = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY;
+    const publicKey = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY?.trim();
     if (!publicKey) {
       setConfigError(
         'Falta configurar NEXT_PUBLIC_MP_PUBLIC_KEY. Agrégala en las variables de entorno y vuelve a desplegar.',
+      );
+      return;
+    }
+    // Una public key mal pegada (por ejemplo "PP_USR-…" al perder la "A"
+    // inicial, o con espacios) hace que Mercado Pago responda 404 y el Brick
+    // muera con "Bricks component initialization failed" — un error que no
+    // dice nada sobre la causa real. Validamos el formato antes de montar.
+    if (!/^(APP_USR-|TEST-)/.test(publicKey)) {
+      setConfigError(
+        `La clave pública de Mercado Pago parece mal copiada: empieza con "${publicKey.slice(0, 8)}…" y debería empezar con "APP_USR-". Revisa NEXT_PUBLIC_MP_PUBLIC_KEY en las variables de entorno (¿se perdió algún carácter al pegarla?) y vuelve a desplegar.`,
       );
       return;
     }
