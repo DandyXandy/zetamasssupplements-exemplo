@@ -65,62 +65,69 @@ export function Hero({ slides }: { slides?: HeroSlide[] }) {
   return (
     <section
       id="inicio"
-      className="relative flex h-[68svh] items-end overflow-hidden pt-28 sm:h-auto sm:min-h-[100svh] sm:pt-40"
+      className="relative bg-tinta pt-24 sm:flex sm:min-h-[100svh] sm:items-end sm:overflow-hidden sm:pt-40"
     >
-      {/* Las 4 capas del carrusel quedan montadas todo el tiempo y solo se
-          cruzan por opacidad — evita parpadeos y condiciones de carrera con
-          el ciclo de montaje/desmontaje de un carrusel más "inteligente". */}
-      {SLIDES.map((slide, i) => (
-        <div
-          key={i}
-          aria-hidden={i !== index}
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out"
-          style={{ opacity: i === index ? 1 : 0 }}
+      {/* En mobile la imagen/video va en su propia caja con object-contain:
+          se ve la composición completa, sin recortar los costados. En
+          desktop vuelve al tratamiento cinematográfico a pantalla completa
+          (object-cover) superpuesto con el texto. */}
+      <div className="relative aspect-video w-full overflow-hidden sm:absolute sm:inset-0 sm:aspect-auto sm:h-auto">
+        {/* Las 4 capas del carrusel quedan montadas todo el tiempo y solo se
+            cruzan por opacidad — evita parpadeos y condiciones de carrera con
+            el ciclo de montaje/desmontaje de un carrusel más "inteligente". */}
+        {SLIDES.map((slide, i) => (
+          <div
+            key={i}
+            aria-hidden={i !== index}
+            className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+            style={{ opacity: i === index ? 1 : 0 }}
+          >
+            {slide.type === 'video' ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={slide.poster}
+                className="h-full w-full object-contain object-top sm:object-cover"
+              >
+                <source src={slide.src} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                priority={i === 0}
+                className="object-contain object-top sm:object-cover"
+              />
+            )}
+          </div>
+        ))}
+
+        <div className="absolute inset-0 hidden bg-gradient-to-t from-tinta via-tinta/70 to-tinta/30 sm:block" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-tinta/70 via-transparent to-tinta/40 sm:block" />
+
+        {/* Navegación manual del carrusel */}
+        <button
+          type="button"
+          aria-label="Slide anterior"
+          onClick={() => goTo(index - 1)}
+          className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-hueso backdrop-blur-sm transition-colors hover:bg-tinta/60 sm:left-6"
         >
-          {slide.type === 'video' ? (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster={slide.poster}
-              className="h-full w-full object-cover object-top"
-            >
-              <source src={slide.src} type="video/mp4" />
-            </video>
-          ) : (
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              priority={i === 0}
-              className="object-cover object-top"
-            />
-          )}
-        </div>
-      ))}
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="Slide siguiente"
+          onClick={() => goTo(index + 1)}
+          className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-hueso backdrop-blur-sm transition-colors hover:bg-tinta/60 sm:right-6"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-tinta via-tinta/70 to-tinta/30" />
-      <div className="absolute inset-0 bg-gradient-to-r from-tinta/70 via-transparent to-tinta/40" />
-
-      {/* Navegación manual del carrusel */}
-      <button
-        type="button"
-        aria-label="Slide anterior"
-        onClick={() => goTo(index - 1)}
-        className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-hueso backdrop-blur-sm transition-colors hover:bg-tinta/60 sm:left-6"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </button>
-      <button
-        type="button"
-        aria-label="Slide siguiente"
-        onClick={() => goTo(index + 1)}
-        className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-hueso backdrop-blur-sm transition-colors hover:bg-tinta/60 sm:right-6"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </button>
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-5 sm:px-8 sm:pb-24">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-6 sm:px-8 sm:py-0 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
