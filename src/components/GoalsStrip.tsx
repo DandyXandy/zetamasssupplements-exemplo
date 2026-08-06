@@ -1,38 +1,40 @@
 'use client';
 
 import Link from 'next/link';
-import { Droplets, Flame, TrendingUp, Zap } from 'lucide-react';
+import { ArrowRight, Droplets, Flame, TrendingUp, Zap } from 'lucide-react';
 import { GOALS } from '@/lib/catalog';
 
-const ICONS = {
-  'perder-peso': Droplets,
-  'ganar-musculo': TrendingUp,
-  'aumentar-peso': Flame,
-  'aumentar-energia': Zap,
+const CARD_STYLE = {
+  'perder-peso': { icon: Droplets, className: 'bg-tinta text-hueso' },
+  'ganar-musculo': { icon: TrendingUp, className: 'bg-lima text-tinta' },
+  'aumentar-peso': { icon: Flame, className: 'bg-oro text-tinta' },
+  'aumentar-energia': { icon: Zap, className: 'bg-mostaza text-tinta' },
 } as const;
 
 export function GoalsStrip() {
   return (
-    <section className="border-y border-crema-line bg-white px-5 py-6 sm:px-8">
-      <div className="mx-auto max-w-6xl">
-        <p className="mb-4 text-center text-xs font-semibold uppercase tracking-widest2 text-tinta/40">
-          Elige tu objetivo
-        </p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {GOALS.map((goal) => {
-            const Icon = ICONS[goal.slug as keyof typeof ICONS];
-            return (
-              <Link
-                key={goal.slug}
-                href={`/tienda?categoria=${goal.categories.join(',')}`}
-                className="group flex items-center gap-2.5 rounded-xl border border-crema-line px-4 py-3 transition-colors hover:border-lima/50 hover:bg-lima/5"
-              >
-                <Icon className="h-4 w-4 shrink-0 text-lima-dark" />
-                <span className="text-xs font-semibold text-tinta sm:text-sm">{goal.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+    <section className="border-y border-crema-line bg-white py-8 sm:py-12">
+      <p className="mb-4 px-5 text-center text-xs font-semibold uppercase tracking-widest2 text-tinta/40 sm:px-8">
+        Elige tu objetivo
+      </p>
+      <div className="flex flex-col gap-0 sm:mx-auto sm:max-w-6xl sm:flex-row sm:gap-4 sm:px-8">
+        {GOALS.map((goal) => {
+          const style = CARD_STYLE[goal.slug as keyof typeof CARD_STYLE];
+          const Icon = style.icon;
+          return (
+            <Link
+              key={goal.slug}
+              href={`/tienda?categoria=${goal.categories.join(',')}`}
+              className={`group relative flex h-40 items-center justify-between overflow-hidden px-6 transition-opacity hover:opacity-90 sm:h-48 sm:flex-1 sm:rounded-2xl sm:px-5 ${style.className}`}
+            >
+              <Icon className="absolute -bottom-4 -right-4 h-28 w-28 opacity-15 sm:h-24 sm:w-24" />
+              <span className="relative font-display text-2xl leading-tight tracking-wide sm:text-xl">
+                {goal.label}
+              </span>
+              <ArrowRight className="relative h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
