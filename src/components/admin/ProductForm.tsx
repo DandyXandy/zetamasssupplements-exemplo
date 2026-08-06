@@ -9,6 +9,16 @@ import { CATALOG_CATEGORIES } from '@/lib/catalog';
 type SizeRow = { label: string; price: number | null; image?: string };
 type FlavorRow = { label: string; image?: string };
 
+const QUICK_BADGES = [
+  '🔥 Más Vendido',
+  '⭐ Top Valorado',
+  '💥 Promoción',
+  '🚀 Nuevo',
+  '💪 Ganancia de Masa',
+  '⚡ Pre-Entreno',
+  '🥇 Premium',
+];
+
 export type ProductFormData = {
   slug: string;
   name: string;
@@ -221,13 +231,36 @@ export function ProductForm({
               className="mt-1 w-full rounded-lg border border-crema-line px-3 py-2 text-sm"
             />
           </label>
-          <label className="text-xs font-semibold text-tinta/50">
+          <label className="text-xs font-semibold text-tinta/50 sm:col-span-2">
             Sello de marketing (opcional)
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                onClick={() => update('badge', '')}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  form.badge === '' ? 'border-lima bg-lima text-tinta' : 'border-crema-line text-tinta/60'
+                }`}
+              >
+                Ninguno
+              </button>
+              {QUICK_BADGES.map((b) => (
+                <button
+                  key={b}
+                  type="button"
+                  onClick={() => update('badge', b)}
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    form.badge === b ? 'border-lima bg-lima text-tinta' : 'border-crema-line text-tinta/60'
+                  }`}
+                >
+                  {b}
+                </button>
+              ))}
+            </div>
             <input
-              placeholder="Ej: Más vendido, Mejor opción…"
+              placeholder="O escribe tu propio sello…"
               value={form.badge}
               onChange={(e) => update('badge', e.target.value)}
-              className="mt-1 w-full rounded-lg border border-crema-line px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-lg border border-crema-line px-3 py-2 text-sm"
             />
           </label>
           <label className="flex items-center gap-2 self-end pb-2 text-xs font-semibold text-tinta/50">

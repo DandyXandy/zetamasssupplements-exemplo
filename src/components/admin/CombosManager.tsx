@@ -14,7 +14,15 @@ type Combo = {
   images: string[];
 };
 
-const QUICK_BADGES = ['Más vendido', 'Mejor opción', 'Recomendado'];
+const QUICK_BADGES = [
+  '🔥 Más Vendido',
+  '⭐ Top Valorado',
+  '💥 Promoción',
+  '🚀 Nuevo',
+  '💪 Ganancia de Masa',
+  '⚡ Pre-Entreno',
+  '🥇 Premium',
+];
 
 function ComboCard({ combo }: { combo: Combo }) {
   const router = useRouter();

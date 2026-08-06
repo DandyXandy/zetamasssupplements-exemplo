@@ -7,6 +7,51 @@ import { Film, ImageIcon, Loader2, Trash2, Upload } from 'lucide-react';
 
 type Slide = { id: string; type: string; url: string; posterUrl: string | null };
 
+// Los videos subidos por el admin no traen una "portada" — el navegador
+// muestra un cuadro negro hasta que carga suficiente data del video. Para
+// evitarlo, capturamos un frame directo en el navegador (sin depender de
+// procesar video en el servidor) y lo subimos como la foto de portada.
+function captureVideoFrame(file: File): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.muted = true;
+    video.playsInline = true;
+    const objectUrl = URL.createObjectURL(file);
+    video.src = objectUrl;
+
+    const finish = (blob: Blob | null) => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(blob);
+    };
+
+    const timeout = setTimeout(() => finish(null), 8000);
+
+    video.onloadeddata = () => {
+      video.currentTime = Math.min(0.3, (video.duration || 1) / 4);
+    };
+
+    video.onseeked = () => {
+      clearTimeout(timeout);
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx || !canvas.width || !canvas.height) {
+        finish(null);
+        return;
+      }
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => finish(blob), 'image/jpeg', 0.85);
+    };
+
+    video.onerror = () => {
+      clearTimeout(timeout);
+      finish(null);
+    };
+  });
+}
+
 export function BannerManager({ initialSlides }: { initialSlides: Slide[] }) {
   const router = useRouter();
   const [slides, setSlides] = useState(initialSlides);
@@ -26,13 +71,25 @@ export function BannerManager({ initialSlides }: { initialSlides: Slide[] }) {
         return;
       }
 
+      let posterUrl: string | null = null;
+      if (type === 'video') {
+        const frame = await captureVideoFrame(file);
+        if (frame) {
+          const posterForm = new FormData();
+          posterForm.append('file', new File([frame], 'poster.jpg', { type: 'image/jpeg' }));
+          const posterRes = await fetch('/api/admin/upload', { method: 'POST', body: posterForm });
+          const posterData = await posterRes.json();
+          if (posterRes.ok) posterUrl = posterData.url;
+        }
+      }
+
       const createRes = await fetch('/api/admin/banner', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, url: data.url }),
+        body: JSON.stringify({ type, url: data.url, posterUrl }),
       });
       const created = await createRes.json();
-      setSlides((prev) => [...prev, { id: created.id, type, url: data.url, posterUrl: null }]);
+      setSlides((prev) => [...prev, { id: created.id, type, url: data.url, posterUrl }]);
       router.refresh();
     } finally {
       setUploading(null);
@@ -54,7 +111,13 @@ export function BannerManager({ initialSlides }: { initialSlides: Slide[] }) {
           <div key={slide.id} className="overflow-hidden rounded-2xl border border-crema-line bg-white">
             <div className="relative aspect-video bg-crema-soft">
               {slide.type === 'video' ? (
-                <video src={slide.url} muted className="h-full w-full object-cover" />
+                <video
+                  src={slide.url}
+                  poster={slide.posterUrl ?? undefined}
+                  muted
+                  preload="metadata"
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <Image src={slide.url} alt={`Slide ${i + 1}`} fill className="object-cover" />
               )}

@@ -10,7 +10,7 @@ import type { Product } from '@/generated/prisma';
 export type FullProductSize = { label: string; price: number | null; image?: string };
 export type FullProductFlavor = { label: string; image?: string };
 
-export type FullProduct = Omit<CatalogItem, 'sizes'> & {
+export type FullProduct = Omit<CatalogItem, 'sizes' | 'shortDescription'> & {
   id: string;
   sizes: FullProductSize[];
   description: string | null;
@@ -31,6 +31,7 @@ function toCatalogItem(p: Product): CatalogItem {
     isCombo: p.isCombo,
     comboDescription: p.comboDescription ?? undefined,
     badge: p.badge ?? undefined,
+    shortDescription: p.shortDescription ?? undefined,
     sizes: JSON.parse(p.sizes),
     image: JSON.parse(p.images)[0] ?? '/branding/zeta-mascot.png',
   };
@@ -70,14 +71,15 @@ export async function getRelatedFullProducts(slug: string, category: string, max
 }
 
 // Combos destacados en la home (sección "Combos con regalos"). Máximo 6 —
-// si hay más productos con isCombo=true, solo se muestran los primeros 6.
+// los que tienen un sello de marketing (ej. "Más vendido") van primero, así
+// se muestran como los 2 cards grandes de la vitrina.
 export async function getFeaturedCombos(max = 6): Promise<CatalogItem[]> {
   const products = await prisma.product.findMany({
     where: { isCombo: true },
     orderBy: { updatedAt: 'desc' },
-    take: max,
   });
-  return products.map(toCatalogItem);
+  const sorted = [...products].sort((a, b) => Number(!!b.badge) - Number(!!a.badge));
+  return sorted.slice(0, max).map(toCatalogItem);
 }
 
 export async function getHeroSlides() {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Check, Eye, ShoppingCart, Sparkles } from 'lucide-react';
+import { Check, Eye, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import type { CatalogItem } from '@/lib/catalog';
 
@@ -60,8 +60,7 @@ export function CatalogCard({ item, index = 0 }: { item: CatalogItem; index?: nu
           </span>
         )}
         {item.badge && (
-          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-lima px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-tinta">
-            <Sparkles className="h-3 w-3" />
+          <span className="absolute right-3 top-3 rounded-full bg-lima px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-tinta">
             {item.badge}
           </span>
         )}
@@ -74,6 +73,11 @@ export function CatalogCard({ item, index = 0 }: { item: CatalogItem; index?: nu
             {item.name}
           </h3>
         </Link>
+        {item.shortDescription && (
+          <p className="mt-1 line-clamp-2 text-xs leading-snug text-tinta/55">
+            {item.shortDescription}
+          </p>
+        )}
 
         {item.sizes.length > 1 && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">
