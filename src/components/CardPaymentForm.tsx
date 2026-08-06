@@ -42,6 +42,8 @@ export function CardPaymentForm({
   order: OrderInfo;
   onResult: (result: PaymentResult) => void;
 }) {
+  const [mpReady, setMpReady] = useState(false);
+  const [configError, setConfigError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,13 +60,29 @@ export function CardPaymentForm({
     [amount, email, dni],
   );
 
+  // initMercadoPago DEBE ejecutarse antes de que el Brick se monte. Si se
+  // renderiza <CardPayment> en la misma pasada que este efecto, el Brick
+  // intenta armar los Secure Fields sin que el SDK tenga todavía la public
+  // key y falla con "fields_setup_failed_after_3_tries". Por eso montamos el
+  // Brick solo después de que la inicialización terminó.
   useEffect(() => {
     const publicKey = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY;
-    if (publicKey && !initialized) {
+    if (!publicKey) {
+      setConfigError(
+        'Falta configurar NEXT_PUBLIC_MP_PUBLIC_KEY. Agrégala en las variables de entorno y vuelve a desplegar.',
+      );
+      return;
+    }
+    if (!initialized) {
       initMercadoPago(publicKey, { locale: 'es-PE' });
       initialized = true;
     }
+    setMpReady(true);
   }, []);
+
+  if (configError) {
+    return <p className="rounded-lg bg-red-50 p-3 text-xs text-red-700">{configError}</p>;
+  }
 
   return (
     <div className="relative">
@@ -76,14 +94,22 @@ export function CardPaymentForm({
       {error && (
         <p className="mb-3 rounded-lg bg-red-50 p-3 text-xs text-red-700">{error}</p>
       )}
-      {!ready && <p className="mb-2 text-xs text-tinta/40">Cargando formulario seguro…</p>}
+      {(!mpReady || !ready) && (
+        <p className="mb-2 text-xs text-tinta/40">Cargando formulario seguro…</p>
+      )}
+      {mpReady && (
       <CardPayment
         initialization={initialization}
         customization={CUSTOMIZATION}
         onReady={() => setReady(true)}
         onError={(err) => {
           console.error('CardPayment Brick error', err);
-          setError('No se pudo cargar el formulario de pago. Recarga la página o usa Yape.');
+          const cause = (err as { cause?: string })?.cause;
+          setError(
+            cause === 'fields_setup_failed_after_3_tries'
+              ? 'No se pudo cargar el formulario seguro de tarjeta. Suele pasar cuando la clave pública (NEXT_PUBLIC_MP_PUBLIC_KEY) no corresponde a la misma cuenta/entorno que el access token. Revisa que ambas sean del mismo tipo (prueba o producción), o paga con Yape.'
+              : 'No se pudo cargar el formulario de pago. Recarga la página o usa Yape.',
+          );
         }}
         onSubmit={async (formData) => {
           const { description, externalReference, order, onResult } = latest.current;
@@ -116,6 +142,7 @@ export function CardPaymentForm({
           }
         }}
       />
+      )}
     </div>
   );
 }
