@@ -38,7 +38,12 @@ export async function POST(request: Request) {
 
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import('@vercel/blob');
-    const blob = await put(filename, output, { access: 'public', contentType });
+    // sharp/Buffer.concat pueden devolver un buffer respaldado por un
+    // SharedArrayBuffer interno de Node; el fetch que usa @vercel/blob
+    // rechaza ese tipo de buffer ("SharedArrayBuffer is not allowed"), asi
+    // que forzamos una copia respaldada por un ArrayBuffer normal.
+    const safeOutput = Buffer.from(output);
+    const blob = await put(filename, safeOutput, { access: 'public', contentType });
     return NextResponse.json({ url: blob.url });
   }
 
