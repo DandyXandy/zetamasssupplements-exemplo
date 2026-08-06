@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Product" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "brand" TEXT NOT NULL,
@@ -15,36 +15,43 @@ CREATE TABLE "Product" (
     "images" TEXT NOT NULL,
     "sizes" TEXT NOT NULL,
     "flavors" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Order" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "externalReference" TEXT NOT NULL,
     "customerName" TEXT NOT NULL,
+    "customerDni" TEXT NOT NULL,
     "customerEmail" TEXT,
     "customerPhone" TEXT NOT NULL,
     "customerAddress" TEXT NOT NULL,
     "customerDistrict" TEXT NOT NULL,
     "items" TEXT NOT NULL,
-    "total" REAL NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
     "paymentMethod" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "mpPaymentId" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "BannerSlide" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "posterUrl" TEXT,
     "position" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BannerSlide_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

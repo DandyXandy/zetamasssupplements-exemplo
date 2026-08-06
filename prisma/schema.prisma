@@ -1,14 +1,12 @@
-// Base de datos del panel admin. SQLite para desarrollo — al desplegar en un
-// host serverless (Vercel, etc.) hay que migrar DATABASE_URL a un Postgres
-// administrado (ej. Neon, Supabase): con Prisma el cambio es solo de
-// datasource + variable de entorno, el resto del código no cambia.
+// Base de datos del panel admin — Postgres administrado en Neon (compatible
+// con hosting serverless como Vercel).
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model Product {

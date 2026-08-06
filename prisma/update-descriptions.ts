@@ -2,12 +2,15 @@
 // para todo el catálogo (CATALOG en src/lib/catalog.ts), basados en el tipo
 // de producto y la línea de la marca. Los 4 productos "flagship" (que ya
 // tienen ficha técnica completa en src/lib/products.ts) no se tocan.
+import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { CATALOG, type CatalogItem } from '../src/lib/catalog';
 import { PRODUCTS } from '../src/lib/products';
 
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? 'file:./prisma/dev.db' });
+config({ path: '.env.local', quiet: true });
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 type Content = {
