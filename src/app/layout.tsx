@@ -25,7 +25,7 @@ const spaceMono = Space_Mono({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'http://localhost:3000';
 const title = 'Zeta Mass Supplements — Tienda de Suplementos Originales en Perú';
 const description =
   'Whey protein, creatina, pre-entreno, hipercalóricos, aminoácidos y vitaminas 100% originales. Venta al por mayor y por menor, envíos a todo el Perú y pago contra entrega en Lima y Callao.';
