@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
@@ -48,16 +48,44 @@ const BADGES = [
 ];
 
 const SLIDE_DURATION = 6000;
+// Red de seguridad por si el evento 'ended' del video nunca llega (error de
+// red, autoplay bloqueado, metadata corrupta): sin esto el carrusel podría
+// quedarse trabado para siempre en ese slide.
+const VIDEO_FALLBACK_DURATION = 15000;
 
 export function Hero({ slides }: { slides?: HeroSlide[] }) {
   const SLIDES = slides && slides.length > 0 ? slides : DEFAULT_SLIDES;
   const [index, setIndex] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  const next = useCallback(() => {
+    setIndex((i) => (i + 1) % SLIDES.length);
+  }, [SLIDES.length]);
+
+  // Los videos deben terminar de reproducirse antes de avanzar — por eso no
+  // usan un timer fijo como las imágenes, sino el evento 'ended' del propio
+  // <video> (ver más abajo). Este efecto solo programa el avance por tiempo
+  // para slides de imagen, con una excepción de seguridad para video.
   useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, SLIDE_DURATION);
-    return () => clearInterval(id);
+    const current = SLIDES[index];
+    const duration = current?.type === 'image' ? SLIDE_DURATION : VIDEO_FALLBACK_DURATION;
+    const id = setTimeout(next, duration);
+    return () => clearTimeout(id);
+  }, [index, SLIDES, next]);
+
+  // Solo el video del slide activo debe reproducirse; el resto se pausa. Antes
+  // todos los <video autoPlay> reproducían a la vez de fondo (aunque ocultos
+  // por opacidad), lo que competía por CPU/ancho de banda y causaba tirones.
+  useEffect(() => {
+    videoRefs.current.forEach((el, i) => {
+      if (!el) return;
+      if (i === index) {
+        el.currentTime = 0;
+        el.play().catch(() => {});
+      } else {
+        el.pause();
+      }
+    });
   }, [index]);
 
   const goTo = (i: number) => setIndex((i + SLIDES.length) % SLIDES.length);
@@ -84,11 +112,16 @@ export function Hero({ slides }: { slides?: HeroSlide[] }) {
           >
             {slide.type === 'video' ? (
               <video
-                autoPlay
+                ref={(el) => {
+                  videoRefs.current[i] = el;
+                }}
+                autoPlay={i === index}
                 muted
-                loop
                 playsInline
                 poster={slide.poster}
+                onEnded={() => {
+                  if (i === index) next();
+                }}
                 className="h-full w-full object-contain object-top sm:object-cover"
               >
                 <source src={slide.src} type="video/mp4" />
