@@ -10,12 +10,15 @@ import { getSession } from '@/lib/auth';
 // Solo devuelve el prefijo de cada credencial (nunca el valor completo) para
 // poder compararlo con el panel de Mercado Pago sin exponer los secretos.
 
+// Tarjeta y documento tomados tal cual de "Tarjetas de prueba" dentro de la
+// propia aplicación en Mercado Pago (Perú): con el nombre APRO, el documento
+// de prueba oficial es "123456789" (9 dígitos), no un DNI real de 8.
 const TEST_CARD = {
   card_number: '5031755734530604',
   expiration_month: 11,
   expiration_year: 2030,
   security_code: '123',
-  cardholder: { name: 'APRO', identification: { type: 'DNI', number: '12345678' } },
+  cardholder: { name: 'APRO', identification: { type: 'DNI', number: '123456789' } },
 };
 
 export async function GET(request: Request) {
@@ -108,7 +111,7 @@ export async function GET(request: Request) {
             description: 'Diagnostico de credenciales (no es una venta)',
             installments: 1,
             payment_method_id: 'master',
-            payer: { email: 'test@test.com', identification: { type: 'DNI', number: '12345678' } },
+            payer: { email: 'test@test.com', identification: { type: 'DNI', number: '123456789' } },
           }),
         });
         const payData = (await payRes.json()) as {
@@ -117,6 +120,10 @@ export async function GET(request: Request) {
           causes?: { description?: string }[];
         };
         const motivo = payData.causes?.[0]?.description ?? payData.message;
+        // Mostramos el texto crudo de Mercado Pago siempre, en vez de solo la
+        // etiqueta clasificada — así se ve el motivo real del rechazo aunque
+        // no encaje en ninguno de los casos que reconocemos abajo.
+        report.respuestaCrudaDelPago = { httpStatus: payRes.status, motivo, statusMP: payData.status };
 
         if (payRes.ok) {
           report.tipoDeCredenciales = 'PRUEBA ✅ — la tarjeta de prueba fue aceptada, todo listo para testear.';
@@ -124,8 +131,11 @@ export async function GET(request: Request) {
         } else if (motivo?.toLowerCase().includes('live credentials')) {
           report.tipoDeCredenciales =
             'PRODUCCIÓN ❌ — el MP_ACCESS_TOKEN activo es productivo, por eso rechaza la tarjeta de prueba. Copia el Access Token de la pestaña "Prueba" y vuelve a desplegar.';
+        } else if (motivo?.toLowerCase().includes('test credentials')) {
+          report.tipoDeCredenciales =
+            'PRUEBA ✅ (usado con tarjeta real) — estas credenciales son de prueba, por eso no pueden cobrar tarjetas reales. Con la tarjeta de prueba deberían funcionar.';
         } else {
-          report.tipoDeCredenciales = `No se pudo determinar. Mercado Pago respondió ${payRes.status}: ${motivo ?? 'sin detalle'}`;
+          report.tipoDeCredenciales = `No se pudo clasificar automáticamente. Mira "respuestaCrudaDelPago" abajo para el motivo exacto que dio Mercado Pago (HTTP ${payRes.status}).`;
         }
       }
     } catch (error) {
