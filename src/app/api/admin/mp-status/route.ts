@@ -106,7 +106,10 @@ export async function GET(request: Request) {
             'X-Idempotency-Key': `diag-${Date.now()}`,
           },
           body: JSON.stringify({
-            transaction_amount: 1,
+            // Mercado Pago rechaza transaction_amount muy bajo (ej. 1) con
+            // "Invalid value for transaction_amount" — sin relación con las
+            // credenciales. 100 evita ese falso positivo en el diagnóstico.
+            transaction_amount: 100,
             token: data.id,
             description: 'Diagnostico de credenciales (no es una venta)',
             installments: 1,
