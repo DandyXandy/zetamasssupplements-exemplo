@@ -26,13 +26,52 @@ export async function GET(request: Request) {
   const publicKey = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY?.trim();
 
   const report: Record<string, unknown> = {
+    // Mostramos también el final: dos tokens distintos pueden empezar igual,
+    // y así se puede confirmar de un vistazo si el valor cambió de verdad.
     accessToken: accessToken
-      ? { prefijo: accessToken.slice(0, 16) + '…', largo: accessToken.length }
+      ? {
+          prefijo: accessToken.slice(0, 16) + '…',
+          final: '…' + accessToken.slice(-6),
+          largo: accessToken.length,
+        }
       : 'FALTA (no está configurada)',
     publicKey: publicKey
-      ? { prefijo: publicKey.slice(0, 16) + '…', largo: publicKey.length }
+      ? {
+          prefijo: publicKey.slice(0, 16) + '…',
+          final: '…' + publicKey.slice(-6),
+          largo: publicKey.length,
+        }
       : 'FALTA (no está configurada)',
   };
+
+  // Qué cuenta de Mercado Pago corresponde al access token. Si es un usuario
+  // de prueba (tag "test_user"), las credenciales salieron de una cuenta de
+  // prueba y no de la aplicación real — un caso que confunde bastante.
+  if (accessToken) {
+    try {
+      const meRes = await fetch('https://api.mercadopago.com/users/me', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (meRes.ok) {
+        const me = (await meRes.json()) as {
+          id?: number;
+          nickname?: string;
+          site_id?: string;
+          tags?: string[];
+        };
+        report.cuentaMercadoPago = {
+          id: me.id,
+          nickname: me.nickname,
+          pais: me.site_id,
+          esUsuarioDePrueba: me.tags?.includes('test_user') ? 'SÍ' : 'NO',
+        };
+      } else {
+        report.cuentaMercadoPago = `El access token fue rechazado (HTTP ${meRes.status}). Puede estar incompleto o vencido.`;
+      }
+    } catch (error) {
+      report.cuentaMercadoPago = `No se pudo consultar: ${(error as Error).message}`;
+    }
+  }
 
   // ¿La public key existe? Tokenizar no cobra nada, solo valida la clave.
   if (publicKey) {
